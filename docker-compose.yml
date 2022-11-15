@@ -98,6 +98,22 @@ services:
         aliases:
           - "composite"
 
+  gateway:
+    build: gateway
+    mem_limit: 512m
+    ports:
+      - "8085:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      #      configserver:
+      #        condition: service_started
+      eurekaserver:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "gateway"
 
   customer-db:
     image: mysql:5.7.32

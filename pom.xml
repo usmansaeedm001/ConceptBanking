@@ -16,6 +16,7 @@
         <module>account</module>
         <module>card</module>
         <module>composite</module>
+        <module>gateway</module>
     </modules>
 
 </project>
