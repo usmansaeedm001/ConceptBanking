@@ -1,0 +1,19 @@
+server:
+  port: 8888
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/usmansaeedm001/config
+          default-label: master
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "*"
+#springdoc:
+#  swagger-ui:
+#    path: /mus/openbanking/ui
+#  api-docs:
+#    enabled: true
+#    path: /mus/openbanking/docs
+#  use-management-port: true

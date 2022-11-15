@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mus</groupId>
+    <artifactId>ConceptBanking</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>ConceptBanking</name>
+    <description>ConceptBanking</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>ConfigServer</module>
+        <module>discovery</module>
+        <module>customer</module>
+        <module>account</module>
+        <module>card</module>
+        <module>composite</module>
+    </modules>
+
+</project>

@@ -1,0 +1,19 @@
+version: '2.1'
+
+services:
+  configserver:
+    build: ConfigServer
+    mem_limit: 512m
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      backend:
+        aliases:
+          - "configserver"
+
+networks:
+  backend:
+    name: concept-banking
+    driver: bridge

@@ -1,0 +1,175 @@
+version: '2.1'
+
+services:
+#  configserver:
+#    build: ConfigServer
+#    mem_limit: 512m
+#    ports:
+#      - "8888:8888"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    networks:
+#      backend:
+#        aliases:
+#          - "configserver"
+
+  eurekaserver:
+    build: discovery
+    mem_limit: 512m
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+#    depends_on:
+#      configserver:
+#        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "eurekaserver"
+
+  customer:
+    build: customer
+    mem_limit: 512m
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      customer-db:
+        condition: service_healthy
+#      configserver:
+#        condition: service_started
+      eurekaserver:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "customer"
+
+  account:
+    build: account
+    mem_limit: 512m
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      account-db:
+        condition: service_healthy
+#      configserver:
+#        condition: service_started
+      eurekaserver:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "account"
+  card:
+    build: card
+    mem_limit: 512m
+    ports:
+      - "8083:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      card-db:
+        condition: service_healthy
+#      configserver:
+#        condition: service_started
+      eurekaserver:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "card"
+  composite:
+    build: composite
+    mem_limit: 512m
+    ports:
+      - "8084:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      eurekaserver:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "composite"
+
+
+  customer-db:
+    image: mysql:5.7.32
+    mem_limit: 512m
+    ports:
+      - "3307:3306"
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=customer-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60
+    networks:
+      backend:
+        aliases:
+          - "customer-db"
+
+  account-db:
+    image: mysql:5.7.32
+    mem_limit: 512m
+    ports:
+      - "3308:3306"
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=account-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60
+    networks:
+      backend:
+        aliases:
+          - "account-db"
+
+  card-db:
+    image: mysql:5.7.32
+    mem_limit: 2560m
+    ports:
+      - "3309:3306"
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=card-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60
+    networks:
+      backend:
+        aliases:
+          - "card-db"
+
+
+networks:
+  backend:
+    name: concept-banking
+    driver: bridge
