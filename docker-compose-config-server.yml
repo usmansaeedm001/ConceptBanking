@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   configserver:
-    build: ConfigServer
+    build: ../ConfigServer
     mem_limit: 512m
     ports:
       - "8888:8888"
