@@ -25,8 +25,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 import static java.util.logging.Level.FINE;
 
 /**
@@ -61,8 +59,8 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.with(LayerType.AGGREGATION_LAYER)
 			.with(EntityType.CUSTOMER.toString())
 			.build();
-				String uri = String.format("%s/api/customer/search/%s/%s", serviceUri, pageNo, pageSize);
-//		String uri = String.format("http://localhost:7081/api/customer/search/%s/%s",pageNo, pageSize);
+		String uri = String.format("%s/api/customer/search/%s/%s", serviceUri, pageNo, pageSize);
+		//		String uri = String.format("http://localhost:7081/api/customer/search/%s/%s",pageNo, pageSize);
 		log.info("proxying search all customer with input details [{}] to uri [{}]", dto, uri);
 
 		return webClientBuilder.build()
@@ -76,9 +74,9 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.flatMapMany(Flux::fromIterable)
 			.log(log.getName(), FINE)
 			.onErrorResume(throwable -> {
-			log.error("Error occurred while searching customers with error message [{}]", throwable.getMessage(), throwable);
-			return Flux.empty();
-		});
+				log.error("Error occurred while searching customers with error message [{}]", throwable.getMessage(), throwable);
+				return Flux.empty();
+			});
 	}
 
 	@Override
@@ -89,8 +87,8 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.with(EntityType.CUSTOMER.toString())
 			.build();
 		//		class GetMonoApiResponse extends ApiResponse<CustomerDto> {}
-				String uri = String.format("%s/api/customer/%s", serviceUri, uuid);
-//		String uri = String.format("http://localhost:7081/api/customer/%s", uuid);
+		String uri = String.format("%s/api/customer/%s", serviceUri, uuid);
+		//		String uri = String.format("http://localhost:7081/api/customer/%s", uuid);
 		log.info("proxying get customer by uuid [{}] to uri [{}]", uuid, uri);
 		Mono<GetApiResponse> getApiResponseMono = webClientBuilder.build()
 			.get()
@@ -111,8 +109,8 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.with(LayerType.AGGREGATION_LAYER)
 			.with(EntityType.CUSTOMER.toString())
 			.build();
-				String uri = String.format("%s/api/customer", serviceUri);
-//		String uri = String.format("http://localhost:7081/api/customer/", serviceUri);
+		String uri = String.format("%s/api/customer", serviceUri);
+		//		String uri = String.format("http://localhost:7081/api/customer/", serviceUri);
 		log.info("proxying get all customer to uri [{}] with payload [{}]", dto, uri);
 		Mono<CustomerDto> mono = webClientBuilder.build()
 			.post()
@@ -123,8 +121,8 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.bodyToMono(SaveApiResponse.class)
 			.map(SaveApiResponse::getData)
 			.log(log.getName(), FINE)
-			.onErrorMap(Exception.class, exception ->
-				new ApplicationException(new EnumerationWrapper<>(ErrorCode.INVALID_REQUEST), trackCode, exception.getMessage()));
+			.onErrorMap(Exception.class,
+				exception -> new ApplicationException(new EnumerationWrapper<>(ErrorCode.INVALID_REQUEST), trackCode, exception.getMessage()));
 		return mono;
 	}
 
@@ -194,8 +192,8 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 
 	@Override
 	public Mono<Health> getHealth() {
-				String healthUri = "/api/customer/actuator/health";
-//		String healthUri = "http://localhost:7081/api/customer/actuator/health";
+		String healthUri = "/api/customer/actuator/health";
+		//		String healthUri = "http://localhost:7081/api/customer/actuator/health";
 		log.debug("Will call the Health API on URL: {}", healthUri);
 		return webClientBuilder.build()
 			.get()
@@ -258,10 +256,8 @@ class GetApiResponse {
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 class SearchApiResponse {
-	@JsonProperty("errorInfo")
-	private ErrorInfo errorInfo;
-	@JsonProperty("Data")
-	private Page<CustomerDto> Data;
+	@JsonProperty("errorInfo") private ErrorInfo errorInfo;
+	@JsonProperty("Data") private Page<CustomerDto> Data;
 
 	public SearchApiResponse(ErrorInfo errorInfo) {
 		this.errorInfo = errorInfo;
