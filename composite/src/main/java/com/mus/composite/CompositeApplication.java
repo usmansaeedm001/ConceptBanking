@@ -24,12 +24,6 @@ public class CompositeApplication {
 	@Autowired CustomerCompositeAdapterImpl customerCompositeAdapter;
 
 	@Bean
-	@LoadBalanced
-	public WebClient.Builder loadBalancedWebClientBuilder() {
-		return WebClient.builder();
-	}
-
-	@Bean
 	ReactiveHealthContributor coreServices() {
 		return customerCompositeAdapter.getHealthRegistry();
 	}
