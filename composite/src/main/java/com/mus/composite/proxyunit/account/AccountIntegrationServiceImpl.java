@@ -31,13 +31,13 @@ import static java.util.logging.Level.FINE;
 @Slf4j
 @IntegrationService
 public class AccountIntegrationServiceImpl implements AccountIntegrationService {
-	@Autowired WebClient.Builder webClientBuilder;
+	@Autowired WebClient.Builder loadBalancedWebClientBuilder;
 	@Value("${app.customer-service.uri}") String serviceUri;
 
 	@Override
 	public Flux<AccountDto> getAll() {
 		String uri = String.format("%s/api/account", serviceUri);
-		Flux<AccountDto> flux = webClientBuilder.build()
+		Flux<AccountDto> flux = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
@@ -55,7 +55,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 			.with(EntityType.ACCOUNT.toString())
 			.build();
 		String uri = String.format("%s/api/account/%s/%s", serviceUri, pageNo, pageSize);
-		Flux<AccountDto> pageMono = webClientBuilder.build()
+		Flux<AccountDto> pageMono = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
@@ -71,7 +71,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 	@Override
 	public Flux<AccountDto> getAllByCustomerUuid(String uuid) {
 		String uri = String.format("%s/api/account/Customer/%s", serviceUri, uuid);
-		Flux<AccountDto> flux = webClientBuilder.build()
+		Flux<AccountDto> flux = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
@@ -84,7 +84,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 	@Override
 	public Mono<AccountDto> get(String uuid) {
 		String uri = String.format("%s/api/account/%s", serviceUri, uuid);
-		Mono<AccountDto> mono = webClientBuilder.build()
+		Mono<AccountDto> mono = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
@@ -102,7 +102,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 			.with(EntityType.ACCOUNT.toString())
 			.build();
 		String uri = String.format("%s/api/account", serviceUri);
-		Mono<AccountDto> mono = webClientBuilder.build()
+		Mono<AccountDto> mono = loadBalancedWebClientBuilder.build()
 			.post()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -122,7 +122,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 			.with(EntityType.ACCOUNT.toString())
 			.build();
 		String uri = String.format("%s/api/account/%s", serviceUri, uuid);
-		Mono<AccountDto> mono = webClientBuilder.build()
+		Mono<AccountDto> mono = loadBalancedWebClientBuilder.build()
 			.put()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -142,7 +142,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 			.with(EntityType.ACCOUNT.toString())
 			.build();
 		String uri = String.format("%s/api/account", serviceUri);
-		Mono<AccountDto> mono = webClientBuilder.build()
+		Mono<AccountDto> mono = loadBalancedWebClientBuilder.build()
 			.patch()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -162,7 +162,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 			.with(EntityType.ACCOUNT.toString())
 			.build();
 		String uri = String.format("%s/api/account/%s", serviceUri, uuid);
-		webClientBuilder.build()
+		loadBalancedWebClientBuilder.build()
 			.delete()
 			.uri(uri)
 			.retrieve()
@@ -179,7 +179,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 			.with(EntityType.ACCOUNT.toString())
 			.build();
 		String uri = String.format("%s/api/account/account/%s", serviceUri, uuid);
-		webClientBuilder.build()
+		loadBalancedWebClientBuilder.build()
 			.delete()
 			.uri(uri)
 			.retrieve()
@@ -192,7 +192,7 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 	public Mono<Health> getHealth() {
 		String healthUri = "/api/account/actuator/health";
 		log.debug("Will call the Health API on URL: {}", healthUri);
-		return webClientBuilder.build().get().uri(healthUri).retrieve().bodyToMono(String.class).map(s -> new Health.Builder().up().build())
+		return loadBalancedWebClientBuilder.build().get().uri(healthUri).retrieve().bodyToMono(String.class).map(s -> new Health.Builder().up().build())
 			.onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build())).log(log.getName(), FINE);
 	}
 

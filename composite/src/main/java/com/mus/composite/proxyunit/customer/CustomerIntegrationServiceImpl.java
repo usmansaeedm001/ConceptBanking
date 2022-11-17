@@ -35,14 +35,14 @@ import static java.util.logging.Level.FINE;
 @Slf4j
 @IntegrationService
 public class CustomerIntegrationServiceImpl implements CustomerIntegrationService {
-	@Autowired WebClient.Builder webClientBuilder;
+	@Autowired WebClient.Builder loadBalancedWebClientBuilder;
 	@Value("${app.customer-service.uri}") String serviceUri;
 
 	@Override
 	public Flux<CustomerDto> getAll() {
 		String uri = String.format("%s/api/customer/", serviceUri);
 		log.info("proxying get all customer to uri [{}]", uri);
-		Flux<CustomerDto> flux = webClientBuilder.build()
+		Flux<CustomerDto> flux = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
@@ -63,7 +63,7 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 		//		String uri = String.format("http://localhost:7081/api/customer/search/%s/%s",pageNo, pageSize);
 		log.info("proxying search all customer with input details [{}] to uri [{}]", dto, uri);
 
-		return webClientBuilder.build()
+		return loadBalancedWebClientBuilder.build()
 			.post()
 			.uri(uri)
 			.bodyValue(dto)
@@ -90,7 +90,7 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 		String uri = String.format("%s/api/customer/%s", serviceUri, uuid);
 		//		String uri = String.format("http://localhost:7081/api/customer/%s", uuid);
 		log.info("proxying get customer by uuid [{}] to uri [{}]", uuid, uri);
-		Mono<GetApiResponse> getApiResponseMono = webClientBuilder.build()
+		Mono<GetApiResponse> getApiResponseMono = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -112,7 +112,7 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 		String uri = String.format("%s/api/customer", serviceUri);
 		//		String uri = String.format("http://localhost:7081/api/customer/", serviceUri);
 		log.info("proxying get all customer to uri [{}] with payload [{}]", dto, uri);
-		Mono<CustomerDto> mono = webClientBuilder.build()
+		Mono<CustomerDto> mono = loadBalancedWebClientBuilder.build()
 			.post()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -135,7 +135,7 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.build();
 		String uri = String.format("%s/api/customer/%s", serviceUri, uuid);
 		log.info("proxying update customer to uri [{}] with payload [{}]", uri, dto);
-		Mono<CustomerDto> mono = webClientBuilder.build()
+		Mono<CustomerDto> mono = loadBalancedWebClientBuilder.build()
 			.put()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -157,7 +157,7 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.build();
 		String uri = String.format("%s/api/customer", serviceUri);
 		log.info("proxying partial update customer to uri [{}] with payload [{}]", uri, dto);
-		return webClientBuilder.build()
+		return loadBalancedWebClientBuilder.build()
 			.patch()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -178,7 +178,7 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.build();
 		String uri = String.format("%s/api/customer/%s", serviceUri, uuid);
 		log.info("proxying partial update customer with uuid [{}] to uri [{}]", uuid, uri);
-		webClientBuilder.build()
+		loadBalancedWebClientBuilder.build()
 			.delete()
 			.uri(uri)
 			.retrieve()
@@ -195,7 +195,7 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 		String healthUri = "/api/customer/actuator/health";
 		//		String healthUri = "http://localhost:7081/api/customer/actuator/health";
 		log.debug("Will call the Health API on URL: {}", healthUri);
-		return webClientBuilder.build()
+		return loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(healthUri)
 			.retrieve()

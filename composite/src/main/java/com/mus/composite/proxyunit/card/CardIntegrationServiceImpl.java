@@ -31,13 +31,13 @@ import static java.util.logging.Level.FINE;
 @Slf4j
 @IntegrationService
 public class CardIntegrationServiceImpl implements CardIntegrationService {
-	@Autowired WebClient.Builder webClientBuilder;
+	@Autowired WebClient.Builder loadBalancedWebClientBuilder;
 	@Value("${app.card-service.uri}") String serviceUri;
 
 	@Override
 	public Flux<CardDto> getAll() {
 		String uri = String.format("%s/api/card", serviceUri);
-		Flux<CardDto> flux = webClientBuilder.build()
+		Flux<CardDto> flux = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
@@ -55,7 +55,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 			.with(EntityType.CARD.toString())
 			.build();
 		String uri = String.format("%s/api/card/search/%s/%s", serviceUri, pageNo, pageSize);
-		Flux<CardDto> pageMono = webClientBuilder.build()
+		Flux<CardDto> pageMono = loadBalancedWebClientBuilder.build()
 			.post()
 			.uri(uri)
 			.retrieve()
@@ -71,7 +71,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 	@Override
 	public Flux<CardDto> getAllByCustomerUuid(String uuid) {
 		String uri = String.format("%s/api/card/Customer/%s", serviceUri, uuid);
-		Flux<CardDto> flux = webClientBuilder.build()
+		Flux<CardDto> flux = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
@@ -84,7 +84,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 	@Override
 	public Mono<CardDto> get(String uuid) {
 		String uri = String.format("%s/api/card/%s", serviceUri, uuid);
-		Mono<CardDto> mono = webClientBuilder.build()
+		Mono<CardDto> mono = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
@@ -102,7 +102,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 			.with(EntityType.CARD.toString())
 			.build();
 		String uri = String.format("%s/api/card", serviceUri);
-		Mono<CardDto> mono = webClientBuilder.build()
+		Mono<CardDto> mono = loadBalancedWebClientBuilder.build()
 			.post()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -122,7 +122,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 			.with(EntityType.CARD.toString())
 			.build();
 		String uri = String.format("%s/api/card/%s", serviceUri, uuid);
-		Mono<CardDto> mono = webClientBuilder.build()
+		Mono<CardDto> mono = loadBalancedWebClientBuilder.build()
 			.put()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -143,7 +143,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 			.with(EntityType.CARD.toString())
 			.build();
 		String uri = String.format("%s/api/card", serviceUri);
-		Mono<CardDto> mono = webClientBuilder.build()
+		Mono<CardDto> mono = loadBalancedWebClientBuilder.build()
 			.patch()
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
@@ -163,7 +163,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 			.with(EntityType.CARD.toString())
 			.build();
 		String uri = String.format("%s/api/card/%s", serviceUri, uuid);
-		webClientBuilder.build()
+		loadBalancedWebClientBuilder.build()
 			.delete()
 			.uri(uri)
 			.retrieve()
@@ -180,7 +180,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 			.with(EntityType.CARD.toString())
 			.build();
 		String uri = String.format("%s/api/card/card/%s", serviceUri, uuid);
-		webClientBuilder.build()
+		loadBalancedWebClientBuilder.build()
 			.delete()
 			.uri(uri)
 			.retrieve()
@@ -193,7 +193,7 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 	public Mono<Health> getHealth() {
 		String healthUri = "/api/card/actuator/health";
 		log.debug("Will call the Health API on URL: {}", healthUri);
-		return webClientBuilder.build().get().uri(healthUri).retrieve().bodyToMono(String.class).map(s -> new Health.Builder().up().build())
+		return loadBalancedWebClientBuilder.build().get().uri(healthUri).retrieve().bodyToMono(String.class).map(s -> new Health.Builder().up().build())
 			.onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build())).log(log.getName(), FINE);
 	}
 
