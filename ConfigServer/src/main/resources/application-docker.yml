@@ -6,7 +6,7 @@ spring:
       server:
         git:
           uri: https://github.com/usmansaeedm001/config
-          default-label: master
+          default-label: develop
           clone-on-start=true:
           refresh-rate: 10
           timeout: 300
