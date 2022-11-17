@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/gateway/checkRefreshScope")
 public class RefreshScopeController {
 
-	@Value("${app.refresh.scope.property}")
+	@Value("${app.refresh.scope.property:default}")
 	private String property;
 
 	@GetMapping("/property")

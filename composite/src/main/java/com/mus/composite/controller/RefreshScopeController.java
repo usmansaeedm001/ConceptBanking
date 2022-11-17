@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/api/gateway/checkRefreshScope")
+@RequestMapping("/api/checkRefreshScope")
 public class RefreshScopeController {
 
-	@Value("${app.refresh.scope.property}")
+	@Value("${app.refresh.scope.property:default}")
 	private String property;
 
 	@GetMapping("/property")
