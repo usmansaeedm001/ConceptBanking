@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import lombok.*;
@@ -19,9 +20,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder(toBuilder = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CardDto {
+public class CardDto implements Serializable {
 	@JsonProperty("uuid") private String uuid;
 	@JsonProperty("customerUuid") private String customerUuid;
 	@JsonProperty("accountUuid") private String accountUuid;

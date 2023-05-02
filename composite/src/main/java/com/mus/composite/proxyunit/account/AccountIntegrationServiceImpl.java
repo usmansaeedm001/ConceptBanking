@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
@@ -21,6 +22,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import lombok .*;
+
+import java.util.List;
+
 import static java.util.logging.Level.FINE;
 
 /**
@@ -32,7 +36,7 @@ import static java.util.logging.Level.FINE;
 @IntegrationService
 public class AccountIntegrationServiceImpl implements AccountIntegrationService {
 	@Autowired WebClient.Builder loadBalancedWebClientBuilder;
-	@Value("${app.customer-service.uri}") String serviceUri;
+	@Value("${app.account-service.uri}") String serviceUri;
 
 	@Override
 	public Flux<AccountDto> getAll() {
@@ -70,12 +74,12 @@ public class AccountIntegrationServiceImpl implements AccountIntegrationService 
 
 	@Override
 	public Flux<AccountDto> getAllByCustomerUuid(String uuid) {
-		String uri = String.format("%s/api/account/Customer/%s", serviceUri, uuid);
+		String uri = String.format("%s/api/account/customer/%s", serviceUri, uuid);
 		Flux<AccountDto> flux = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
-			.bodyToFlux(AccountDto.class)
+			.bodyToFlux(new ParameterizedTypeReference<AccountDto>() {})
 			.log(log.getName(), FINE)
 			.onErrorResume(throwable -> Flux.empty());
 		return flux;

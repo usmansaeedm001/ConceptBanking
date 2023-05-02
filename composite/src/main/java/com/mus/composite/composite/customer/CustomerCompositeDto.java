@@ -24,8 +24,8 @@ import javax.persistence.Column;
 public class CustomerCompositeDto {
 	@JsonProperty("uuid") private String uuid;
 	@JsonProperty("active") private Boolean isActive;
-	@Column(name = "status") private String status;
-	@Column(name = "mobileNo") private String mobileNo;
+	@JsonProperty("status") private String status;
+	@JsonProperty("mobileNo") private String mobileNo;
 	//todo: add Customerdto required fields
 	private List<AccountDto> accountDtoList;
 	private List<CardDto> cardDtoList;

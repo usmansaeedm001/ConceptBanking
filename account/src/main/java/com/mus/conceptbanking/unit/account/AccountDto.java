@@ -19,8 +19,6 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder(toBuilder = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountDto {
 	@JsonProperty("uuid") private String uuid;
 	@JsonProperty("customerUuid") private String customerUuid;

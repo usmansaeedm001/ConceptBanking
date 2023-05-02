@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author Usman
@@ -96,5 +97,11 @@ public class AccountController implements RequestValidationAdviser {
 		return new ResponseEntity<>(new ApiResponse<>(null, null), HttpStatus.NO_CONTENT);
 	}
 
+	@GetMapping(path = "/customer/{uuid}")
+	//	@PreAuthorize(
+	//		"hasAnyAuthority({'USER','ADMIN','READ_ACCOUNT','ADMIN_READ_ACCOUNT' })" + "|| hasAnyRole('ROLE_USER', 'ROLE_ADMIN','ROLE_SUPER_ADMIN', 'ROLE_OWNER')")
+	public ResponseEntity<ApiResponse<List<AccountDto>>> getAccountByCustomer(@PathVariable String uuid) {
+		return new ResponseEntity<>(new ApiResponse<>(null, service.getAllByCustomerUuid(uuid)), HttpStatus.OK);
+	}
 }
 

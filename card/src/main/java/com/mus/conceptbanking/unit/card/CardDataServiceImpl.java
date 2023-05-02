@@ -208,12 +208,15 @@ public class CardDataServiceImpl implements CardDataService {
 	@Transactional(readOnly = true)
 	public List<CardDto> getAllByCustomerUuid(String uuid) {
 		TrackCode trackCode = trackCode(RequestType.GET_ALL);
-		return Stream.ofNullable(uuid)
+		log.debug("Fetching cards against customer uuid : " + uuid);
+		List<CardDto> cardDtoList = Stream.ofNullable(uuid)
 			.map(s -> repository.findAllByCustomerUuidAndIsActiveTrue(s))
 			.flatMap(Collection::stream)
 			.filter(Rethrow.rethrowPredicate(entity -> validator.validate(entity, trackCode)))
 			.map(entity -> mapper.toDto(entity))
 			.collect(Collectors.toList());
+		log.debug("Fetched cards with details : " + cardDtoList);
+		return cardDtoList;
 	}
 
 	@Override

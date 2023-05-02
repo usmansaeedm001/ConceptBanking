@@ -111,6 +111,7 @@ public class CardServiceImpl implements CardService {
 
 	@Override
 	public List<CardDto> getAllByCustomerUuid(String uuid) {
+		log.debug("Going to fetch card for customer uuid : " + uuid);
 		return Optional.ofNullable(uuid)
 			.filter(StringUtils::hasLength)
 			.map(Rethrow.rethrowFunction(s -> dataService.getAllByCustomerUuid(s)))

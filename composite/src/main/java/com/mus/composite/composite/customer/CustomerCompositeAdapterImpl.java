@@ -44,7 +44,7 @@ public class CustomerCompositeAdapterImpl implements CustomerCompositeAdapter {
 			.with(EntityType.CUSTOMER).build();
 		return Mono.zip(customerIntegrationService.get(uuid), accountIntegrationService.getAllByCustomerUuid(uuid).collectList(),
 				cardIntegrationService.getAllByCustomerUuid(uuid).collectList())
-			.map(objects -> new CustomerComposite(objects.getT1(), objects.getT2(), objects.getT3()))
+			.map(objects -> CustomerComposite.builder().customerDto(objects.getT1()).accountDtoList(objects.getT2()).cardDtoList(objects.getT3()).build())
 			.map(composite -> aggregateMapper.toAggregateDto(composite)).doOnError(throwable -> {
 				log.error("Error occurred while aggregating data against customer against uuid [{}]", uuid);
 				throw new BusinessValidationException(new EnumerationWrapper<>(ErrorCode.INTEGRATION_FAILED), trackCode, throwable.getMessage());

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
@@ -21,6 +22,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import lombok .*;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
+import static java.util.logging.Level.ALL;
 import static java.util.logging.Level.FINE;
 
 /**
@@ -70,13 +76,13 @@ public class CardIntegrationServiceImpl implements CardIntegrationService {
 
 	@Override
 	public Flux<CardDto> getAllByCustomerUuid(String uuid) {
-		String uri = String.format("%s/api/card/Customer/%s", serviceUri, uuid);
+		String uri = String.format("%s/api/card/customer/%s", serviceUri, uuid);
 		Flux<CardDto> flux = loadBalancedWebClientBuilder.build()
 			.get()
 			.uri(uri)
 			.retrieve()
-			.bodyToFlux(CardDto.class)
-			.log(log.getName(), FINE)
+			.bodyToFlux(new ParameterizedTypeReference<CardDto>() {})
+			.log(log.getName(), ALL)
 			.onErrorResume(throwable -> Flux.empty());
 		return flux;
 	}

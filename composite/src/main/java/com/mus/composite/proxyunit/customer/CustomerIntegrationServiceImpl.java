@@ -95,8 +95,8 @@ public class CustomerIntegrationServiceImpl implements CustomerIntegrationServic
 			.uri(uri)
 			.accept(MediaType.APPLICATION_JSON)
 			.exchangeToMono(clientResponse -> clientResponse.bodyToMono(GetApiResponse.class));
-		getApiResponseMono.subscribe(getApiResponse -> log.debug("customerDto [{}]", getApiResponse));
-		return getApiResponseMono.map(GetApiResponse::getData)
+		return getApiResponseMono.doOnNext(getApiResponse -> log.debug("customerDto [{}]", getApiResponse))
+			.map(GetApiResponse::getData)
 			.log(log.getName(), FINE)
 			.onErrorMap(Exception.class,
 				throwable -> new ApplicationException(new EnumerationWrapper<>(ErrorCode.INTEGRATION_FAILED), trackCode, throwable.getMessage()));

@@ -20,4 +20,6 @@ public class CustomerCompositeServiceImpl implements CustomerCompositeService {
 		log.info("Getting customer mono for customer uuid [{}]", uuid);
 		return customerCompositeAdapter.get(uuid);
 	}
+
+
 }

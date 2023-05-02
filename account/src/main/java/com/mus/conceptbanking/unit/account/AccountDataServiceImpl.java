@@ -209,12 +209,15 @@ public class AccountDataServiceImpl implements AccountDataService {
 	@Transactional(readOnly = true)
 	public List<AccountDto> getAllByCustomerUuid(String uuid) {
 		TrackCode trackCode = trackCode(RequestType.GET_ALL);
-		return Stream.ofNullable(uuid)
+		log.debug("Going to fetch account against customer uuid : " + uuid);
+		List<AccountDto> accountDtoList = Stream.ofNullable(uuid)
 			.map(s -> repository.findAllByCustomerUuidAndIsActiveTrue(s))
 			.flatMap(Collection::stream)
 			.filter(Rethrow.rethrowPredicate(entity -> validator.validate(entity, trackCode)))
 			.map(entity -> mapper.toDto(entity))
 			.collect(Collectors.toList());
+		log.debug("Fetched account dto list : " + accountDtoList);
+		return accountDtoList;
 	}
 
 	@Override

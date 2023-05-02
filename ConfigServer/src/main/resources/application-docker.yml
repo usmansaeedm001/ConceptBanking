@@ -6,10 +6,12 @@ spring:
       server:
         git:
           uri: https://github.com/usmansaeedm001/config
-          default-label: develop
-          clone-on-start=true:
+          username: usmansaeedm001
+          password: 0kd0n3@Github.123
+          clone-on-start: true
           refresh-rate: 10
           timeout: 300
+          default-label: master
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"

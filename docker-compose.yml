@@ -1,18 +1,6 @@
 version: '2.1'
 
 services:
-  #  configserver:
-  #    build: ConfigServer
-  #    mem_limit: 512m
-  #    ports:
-  #      - "8888:8888"
-  #    environment:
-  #      - SPRING_PROFILES_ACTIVE=docker
-  #    networks:
-  #      backend:
-  #        aliases:
-  #          - "configserver"
-
   eurekaserver:
     build: discovery
     mem_limit: 512m
@@ -219,11 +207,11 @@ services:
         aliases:
           - "kibana"
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.7.0
+    image: docker.elastic.co/logstash/logstash:8.5.1
     container_name: logstash
     command: logstash -f /etc/logstash/conf.d/logstash.conf
     volumes:
-      - ./config:/etc/logstash/conf.d
+      - ./startupconfig:/etc/logstash/conf.d
     ports:
       - "5000:5000"
     networks:
@@ -245,6 +233,30 @@ services:
       backend:
         aliases:
           - "zipkin"
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus
+    networks:
+      backend:
+        aliases:
+          - "prometheus"
+  grafana:
+    image: "grafana/grafana:latest"
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    container_name: grafana
+    networks:
+      backend:
+        aliases:
+          - "grafana"
 
 volumes:
   esdata1:

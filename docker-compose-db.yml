@@ -1,0 +1,76 @@
+version: '2.1'
+
+services:
+  customer-db:
+    image: mysql:5.7.32
+    mem_limit: 512m
+    ports:
+      - "3307:3306"
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=customer-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60
+    networks:
+      backend:
+        aliases:
+          - "customer-db"
+
+  account-db:
+    image: mysql:5.7.32
+    mem_limit: 512m
+    ports:
+      - "3308:3306"
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=account-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60
+    networks:
+      backend:
+        aliases:
+          - "account-db"
+
+  card-db:
+    image: mysql:5.7.32
+    mem_limit: 512m
+    ports:
+      - "3309:3306"
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=card-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60
+    networks:
+      backend:
+        aliases:
+          - "card-db"
+
+networks:
+  backend:
+    name: concept-banking
+    driver: bridge

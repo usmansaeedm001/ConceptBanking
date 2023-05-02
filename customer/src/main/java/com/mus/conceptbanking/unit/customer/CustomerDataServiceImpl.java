@@ -121,6 +121,7 @@ public class CustomerDataServiceImpl implements CustomerDataService {
 			throw new ApplicationUncheckException(new EnumerationWrapper<>(ErrorCode.INVALID_REQUEST), trackCode, HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		Optional<Customer> optionalEntity = Optional.of(dto)
+			.filter(customerDto -> validator.validateDto(customerDto, trackCode))
 			.map(CustomerDto::getUuid)
 			.filter(StringUtils::hasLength)
 			.flatMap(dtoUuid -> repository.findByUuid(dtoUuid))

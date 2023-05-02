@@ -111,6 +111,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public List<AccountDto> getAllByCustomerUuid(String uuid) {
+		log.debug("Going to fetch account against customer uuid : " + uuid);
 		return Optional.ofNullable(uuid)
 			.filter(StringUtils::hasLength)
 			.map(Rethrow.rethrowFunction(s -> dataService.getAllByCustomerUuid(s)))
